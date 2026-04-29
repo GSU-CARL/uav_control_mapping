@@ -205,6 +205,7 @@ def main(args=None):
         rclpy.spin_once(node, timeout_sec=0.1)
         
     node.get_logger().info("FCU connected! Try WASD keys to fly.")
+    node.get_logger().info("Use SPACE/CTRL for up/down, Q/E for yaw, and L to land. ESC to stop and land immediately.")
 
     try:
         rclpy.spin(node)
