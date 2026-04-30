@@ -34,15 +34,24 @@ def generate_launch_description():
                 os.path.join(get_package_share_directory('rtabmap_launch'), 'launch', 'rtabmap.launch.py')
             ),
             launch_arguments={
-                'rtabmap_args': '--delete_db_on_start',
-                'rgb_topic': '/camera/rgb/image_raw',
-                'depth_topic': '/camera/depth/image_raw',
-                'camera_info_topic': '/camera/rgb/camera_info',
-                'frame_id': 'base_link',
-                'approx_sync': 'true',
-                'qos': '2',
-                'visual_odometry': 'true',
-                'use_sim_time': 'true',
+                'rtabmap_args':     '--delete_db_on_start '
+                                    '--Grid/3D true '
+                                    '--Grid/CellSize 0.15 '
+                                    '--Grid/RangeMax 3.0 '
+                                    '--Grid/RangeMin 0.3 '
+                                    '--RGBD/LinearUpdate 0.2 '
+                                    '--RGBD/AngularUpdate 0.1 '
+                                    '--cloud_output_voxel_size 0.15',
+
+                'rgb_topic':            '/camera/rgb/image_raw',
+                'depth_topic':          '/camera/depth/image_raw',
+                'camera_info_topic':    '/camera/rgb/camera_info',
+                'frame_id':             'base_link',
+                'approx_sync':          'true',
+                'qos':                  '1',           
+                'visual_odometry':      'true',
+                'subscribe_odom_info':  'false',       
+                'use_sim_time':         'true',
             }.items()
         ),
     ])
