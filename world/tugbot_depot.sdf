@@ -479,14 +479,5 @@
       </link>
     </model>
 
-    <!-- Local x500_depth model from package -->
-
-    <!-- <model name="x500_depth_0">
-      <pose>0 0 0.5 0 0 0</pose>
-      <include>
-        <uri>model://x500_depth</uri>
-      </include>
-    </model> -->
-
   </world>
 </sdf>

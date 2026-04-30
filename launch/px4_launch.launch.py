@@ -43,7 +43,8 @@ def generate_launch_description():
     return LaunchDescription(launch_actions)
 
 """
-run this lol
+mannually run 
+
 export GZ_SIM_RESOURCE_PATH=/home/fishman/PX4-Autopilot/Tools/simulation/gz/models
 gz sim -v 4 -r /home/fishman/ros2_ws/src/uav_control_mapping/world/tugbot_depot.sdf
 
