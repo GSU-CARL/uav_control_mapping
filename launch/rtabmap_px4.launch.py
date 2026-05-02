@@ -35,13 +35,15 @@ def generate_launch_description():
             ),
             launch_arguments={
                 'rtabmap_viz': 'false',
+                'viz': 'false',       
+                'rviz': 'false',
                 'rtabmap_args':     '--delete_db_on_start '
                                     '--Grid/3D true '
-                                    '--Grid/CellSize 0.15 '
+                                    '--Grid/CellSize 0.1 '
                                     '--Grid/RangeMax 4.0 '
-                                    '--Grid/RangeMin 0.3 '
-                                    '--RGBD/LinearUpdate 0.2 '
-                                    '--RGBD/AngularUpdate 0.1 '
+                                    '--Grid/RangeMin 0.5 '
+                                    '--RGBD/LinearUpdate 0.3 '
+                                    '--RGBD/AngularUpdate 0.3 '
                                     '--cloud_output_voxel_size 0.2',
 
                 'rgb_topic':            '/camera/rgb/image_raw',
