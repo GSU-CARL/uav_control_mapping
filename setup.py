@@ -46,9 +46,6 @@ setup(
     entry_points={
         'console_scripts': [
             'manual_control_node = uav_control_mapping.manual_control:main',
-            'waypoint_manager = uav_control_mapping.waypoint_manager:main',
-            'trajectory_generator = uav_control_mapping.trajectory_generator:main',
-            'trajectory_follower = uav_control_mapping.trajectory_follower:main',
         ],
     },
 )
