@@ -38,8 +38,7 @@ def generate_launch_description():
                 'viz': 'false',       
                 'rviz': 'false',
                 'rtabmap_args':     '--delete_db_on_start '
-                                    '--Grid/3D true '
-                                    '--Grid/CellSize 0.1 '
+                                    '--Grid/CellSize 0.1 '          # Keep for 2D grid if needed
                                     '--Grid/RangeMax 4.0 '
                                     '--Grid/RangeMin 0.5 '
                                     '--RGBD/LinearUpdate 0.3 '
