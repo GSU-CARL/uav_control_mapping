@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 
 import rclpy
-from rclpy.node import Node
-from rclpy.qos import qos_profile_sensor_data
 import math
 from pynput import keyboard as kb
 
-from geometry_msgs.msg import Twist, PoseStamped
-from mavros_msgs.msg import State
-from mavros_msgs.srv import CommandBool, SetMode
+from geometry_msgs.msg import Twist
+
+from uav_control_mapping.drone_base import DroneBaseNode
 
 MAX_VEL = 2.0
 MAX_YAW_RATE = 0.5
@@ -30,74 +28,30 @@ def body_to_world(vx_body: float, vy_body: float, yaw: float):
 def clamp(val, limit):
     return max(-limit, min(limit, val))
 
-class ManualControlNode(Node):
+class ManualControlNode(DroneBaseNode):
     def __init__(self):
         super().__init__('manual_control_node')
-
-        self.current_state = State()
-        self.current_pose = PoseStamped()
-        self.pose_received = False
-        self.setpoint_counter = 0
 
         self.vx_body = 0.0
         self.vy_body = 0.0
         self.vz = 0.0
         self.yaw_rate = 0.0
 
-        # Subscriptions
-        self.state_sub = self.create_subscription(
-            State, '/mavros/state', self.state_cb, 10
-        )
-        self.local_pos_sub = self.create_subscription(
-            PoseStamped, '/mavros/local_position/pose', self.local_pos_cb, qos_profile_sensor_data
-        )
-
         # Publishers
         self.cmd_vel_pub = self.create_publisher(
             Twist, '/mavros/setpoint_velocity/cmd_vel_unstamped', 10
         )
 
-        # Services
-        self.arming_client = self.create_client(CommandBool, '/mavros/cmd/arming')
-        self.set_mode_client = self.create_client(SetMode, '/mavros/set_mode')
-
-        self.get_logger().info('Waiting for MAVROS services...')
-        self.wait_for_services()
         self.get_logger().info('Services up. Starting keyboard listener and main timer.')
 
         # Input listener
         self.listener = kb.Listener(on_press=self.on_press, on_release=self.on_release)
         self.listener.daemon = True
         self.listener.start()
-
-        self.last_req_time = self.get_clock().now()
         
         # Start 20 Hz timer
         self.timer = self.create_timer(1.0 / 20.0, self.timer_callback)
 
-    def wait_for_services(self):
-        while not self.arming_client.wait_for_service(timeout_sec=1.0):
-            self.get_logger().info('Arming service not available, waiting...')
-        while not self.set_mode_client.wait_for_service(timeout_sec=1.0):
-            self.get_logger().info('Set_mode service not available, waiting...')
-
-    def state_cb(self, msg: State):
-        self.current_state = msg
-
-    def local_pos_cb(self, msg: PoseStamped):
-        self.current_pose = msg
-        self.pose_received = True
-
-    def arm(self):
-        req = CommandBool.Request()
-        req.value = True
-        self.arming_client.call_async(req)
-
-    def set_mode(self, custom_mode: str):
-        req = SetMode.Request()
-        req.custom_mode = custom_mode
-        self.set_mode_client.call_async(req)
-        
     def land(self):
         self.get_logger().info('Emergency/Landing command received. Switching to AUTO.LAND...')
         self._publish_zero()
@@ -117,14 +71,7 @@ class ManualControlNode(Node):
             return
 
         now = self.get_clock().now()
-        dt = (now - self.last_req_time).nanoseconds / 1e9
-
-        if self.current_state.mode != 'OFFBOARD' and dt > 5.0:
-            self.set_mode('OFFBOARD')
-            self.last_req_time = now
-        elif not self.current_state.armed and dt > 5.0:
-            self.arm()
-            self.last_req_time = now
+        is_ready = self.manage_offboard_and_arming(now)
 
         self._publish_cmd()
 

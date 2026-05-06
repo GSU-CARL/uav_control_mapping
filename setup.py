@@ -46,6 +46,7 @@ setup(
     entry_points={
         'console_scripts': [
             'manual_control_node = uav_control_mapping.manual_control:main',
+            'simple_nav_node = uav_control_mapping.simple_nav:main',
         ],
     },
 )
