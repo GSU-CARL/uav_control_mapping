@@ -47,6 +47,9 @@ setup(
         'console_scripts': [
             'manual_control_node = uav_control_mapping.manual_control:main',
             'simple_nav_node = uav_control_mapping.simple_nav:main',
+            'waypoint_manager_node = uav_control_mapping.waypoint_manager:main',
+            'trajectory_generator_node = uav_control_mapping.trajectory_generator:main',
+            'trajectory_follower_node = uav_control_mapping.trajectory_follower:main',
         ],
     },
 )
