@@ -19,6 +19,7 @@ def generate_launch_description():
             "tmux new-session -d -s sim_session 'MicroXRCEAgent udp4 -p 8888' && "
             "tmux split-window -t sim_session 'ros2 launch mavros px4.launch fcu_url:=udp://:14540@localhost:14557' && "
             "tmux split-window -t sim_session 'ros2 launch uav_control_mapping px4_launch.launch.py' && "
+            "tmux split-window -t sim_session 'ros2 launch uav_control_mapping rtabmap_px4.launch.py' && "
             "tmux select-layout -t sim_session tiled && "
             "gnome-terminal -- tmux attach-session -t sim_session ; "
             "sleep infinity"
