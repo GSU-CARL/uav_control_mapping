@@ -1,3 +1,4 @@
 /planning_ai/
 # catch
-/pycache__/
+/__pycache__/
+uav_control_mapping/__pycache__
