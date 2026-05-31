@@ -97,3 +97,27 @@ param set-default NAV_DLL_ACT 0 # default is 2
 param set NAV_RCL_ACT 0
 param set COM_RCL_EXCEPT 4
 ```
+## Add the new x500_lidar_3d model to px4_autopilot
+
+got to `PX4-Autopilot/ROMFS/px4fmu_common/init.d-posix/airframes/`
+
+copy this file in there
+`4022_gz_x500_lidar_3d`
+
+rename the 4022 if needed
+
+Edit the CMakeList.txt
+add this line 
+```
+.
+.
+.
+4019_gz_x500_gimbal
+4020_gz_tiltrotor
+4021_gz_x500_flow
+4022_gz_x500_lidar_3d # add this
+
+.
+.
+.
+```

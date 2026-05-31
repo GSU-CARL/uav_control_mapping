@@ -2,6 +2,7 @@
 import os
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
+from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
@@ -14,6 +15,7 @@ def generate_launch_description():
     package_dir = get_package_share_directory('uav_control_mapping')
     custom_world_path = os.path.join(package_dir, 'world', 'tugbot_depot.sdf')
     custom_model_path = os.path.join(package_dir, 'model')
+    bridge_config = os.path.join(package_dir, 'config', 'lidar_bridge.yaml')
 
     # 1. Start Gazebo Sim (Equivalent to Terminal 1)
     gz_sim_process = ExecuteProcess(
@@ -39,8 +41,20 @@ def generate_launch_description():
         }
     )
 
+    # 3. Start ROS-GZ Bridge
+    ros_gz_bridge_process = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        name='ros_gz_bridge',
+        parameters=[{
+            'config_file': bridge_config,
+        }],
+        output='screen'
+    )
+
     launch_actions.append(gz_sim_process)
     launch_actions.append(px4_sitl_process)
+    launch_actions.append(ros_gz_bridge_process)
 
     return LaunchDescription(launch_actions)
 
