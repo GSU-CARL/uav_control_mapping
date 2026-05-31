@@ -27,7 +27,7 @@ def generate_launch_description():
 
     # 2. Start PX4 SITL in standalone mode (Equivalent to Terminal 2)
     px4_sitl_process = ExecuteProcess(
-        cmd=['make px4_sitl gz_x500_depth'],
+        cmd=['make px4_sitl gz_x500_lidar_3d'],
         cwd='/home/fishman/PX4-Autopilot',
         output='screen',
         shell=True,  

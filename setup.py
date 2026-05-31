@@ -19,7 +19,7 @@ def get_data_files():
     ]
     
     # Recursively add model files and subdirectories
-    for root, dirs, files in os.walk('models'):
+    for root, dirs, files in os.walk('model'):
         if files:  # Only add if directory has files
             target_dir = os.path.join('share', package_name, root)
             file_paths = [os.path.join(root, f) for f in files]
