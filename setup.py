@@ -50,6 +50,7 @@ setup(
             'waypoint_manager_node = uav_control_mapping.waypoint_manager:main',
             'trajectory_generator_node = uav_control_mapping.trajectory_generator:main',
             'trajectory_follower_node = uav_control_mapping.trajectory_follower:main',
+            'lidar_time_injector = uav_control_mapping.lidar_time_injection:main',
         ],
     },
 )

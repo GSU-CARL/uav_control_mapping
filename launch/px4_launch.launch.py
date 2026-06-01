@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess
+from launch.actions import ExecuteProcess, TimerAction
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
@@ -15,13 +15,19 @@ def generate_launch_description():
     custom_world_path = os.path.join(package_dir, 'world', 'tugbot_depot.sdf')
     custom_model_path = os.path.join(package_dir, 'model')
 
+    # Fix for ROS 2 Jazzy shadowing system Gazebo CLI
+    env_gz_config = os.environ.get('GZ_CONFIG_PATH', '')
+    if '/usr/share/gz' not in env_gz_config:
+        env_gz_config = f"{env_gz_config}:/usr/share/gz" if env_gz_config else "/usr/share/gz"
+
     # 1. Start Gazebo Sim (Equivalent to Terminal 1)
     gz_sim_process = ExecuteProcess(
         cmd=['gz', 'sim', '-r', '-v', '4', custom_world_path],
         output='screen',
         additional_env={
             # Setting the resource path explicitly to include local models and PX4 models
-            'GZ_SIM_RESOURCE_PATH': f"{custom_model_path}:/home/fishman/PX4-Autopilot/Tools/simulation/gz/models"
+            'GZ_SIM_RESOURCE_PATH': f"{custom_model_path}:/home/fishman/PX4-Autopilot/Tools/simulation/gz/models",
+            'GZ_CONFIG_PATH': env_gz_config
         }
     )
 
@@ -35,12 +41,18 @@ def generate_launch_description():
             # Passing the standalone flag and world name
             'PX4_GZ_STANDALONE': '1',
             'PX4_GZ_WORLD': 'tugbot_depot',
-            'GZ_SIM_RESOURCE_PATH': f"{custom_model_path}:/home/fishman/PX4-Autopilot/Tools/simulation/gz/models"
+            'GZ_SIM_RESOURCE_PATH': f"{custom_model_path}:/home/fishman/PX4-Autopilot/Tools/simulation/gz/models",
+            'GZ_CONFIG_PATH': env_gz_config
         }
     )
 
     launch_actions.append(gz_sim_process)
-    launch_actions.append(px4_sitl_process)
+    launch_actions.append(
+        TimerAction(
+            period=15.0,
+            actions=[px4_sitl_process]
+        )
+    )
 
     return LaunchDescription(launch_actions)
 
