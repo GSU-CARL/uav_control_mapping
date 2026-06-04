@@ -1,0 +1,11 @@
+#!/bin/sh
+# @name X500 3D Lidar (Gazebo)
+# @type Quadrotor x
+# @class Copter
+# @board px4_fmu-v2 exclude
+# @board px4_fmu-v3 exclude
+
+PX4_GZ_MODEL=x500_lidar_3d
+
+. ${R}etc/init.d-posix/airframes/4001_gz_x500
+
