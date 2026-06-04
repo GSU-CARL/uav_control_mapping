@@ -16,6 +16,7 @@ def generate_launch_description():
     custom_world_path = os.path.join(package_dir, 'world', 'tugbot_depot.sdf')
     custom_model_path = os.path.join(package_dir, 'model')
     bridge_config = os.path.join(package_dir, 'config', 'lidar_bridge.yaml')
+    px4_world_path = '/home/fishman/PX4-Autopilot/Tools/simulation/gz/worlds/baylands.sdf'
 
     # Fix for ROS 2 Jazzy shadowing system Gazebo CLI
     env_gz_config = os.environ.get('GZ_CONFIG_PATH', '')
@@ -33,6 +34,17 @@ def generate_launch_description():
         }
     )
 
+    # default world.
+    # gz_sim_process = ExecuteProcess(
+    #     cmd=['gz', 'sim', '-r', '-v', '4', px4_world_path],
+    #     output='screen',
+    #     additional_env={
+    #         'GZ_SIM_RESOURCE_PATH': f"/home/fishman/PX4-Autopilot/Tools/simulation/gz/models",
+    #         'GZ_CONFIG_PATH': env_gz_config
+    #     }
+    # )
+
+
     # 2. Start PX4 SITL in standalone mode (Equivalent to Terminal 2)
     px4_sitl_process = ExecuteProcess(
         cmd=['make px4_sitl gz_x500_lidar_3d'],
@@ -48,6 +60,20 @@ def generate_launch_description():
         }
     )
 
+    # default world
+    # px4_sitl_process = ExecuteProcess(
+    #     cmd=['make px4_sitl gz_x500_lidar_3d'],
+    #     cwd='/home/fishman/PX4-Autopilot',
+    #     output='screen',
+    #     shell=True,
+    #     additional_env={
+    #         'PX4_GZ_STANDALONE': '1',
+    #         'PX4_GZ_WORLD': 'baylands',  # <-- Use 'default' (or 'empty', 'baylands', etc.)
+    #         'GZ_SIM_RESOURCE_PATH': f"/home/fishman/PX4-Autopilot/Tools/simulation/gz/models",
+    #         'GZ_CONFIG_PATH': env_gz_config
+    #     }
+    # )
+
     # 3. Start ROS-GZ Bridge
     ros_gz_bridge_process = Node(
         package='ros_gz_bridge',
@@ -60,14 +86,33 @@ def generate_launch_description():
         output='screen'
     )
 
+    # 4. Time injection
+
+    lidar_timestamp_node = Node(
+    package='uav_control_mapping',
+    executable='lidar_time_injector',
+    name='lidar_timestamp_node',
+    parameters=[{
+        'use_sim_time': True,
+        'input_topic': '/lidar_3d/points',
+        'output_topic': '/lidar_3d/points_timestamped',
+        'rpm': 600.0,
+        'horizontal_samples': 1800,
+        'vertical_samples': 16,
+        'intensity_scale': 255.0,
+    }],
+    output='screen',
+)
+
     launch_actions.append(gz_sim_process)
     launch_actions.append(
         TimerAction(
-            period=15.0,
+            period=5.0,
             actions=[px4_sitl_process]
         )
     )
     launch_actions.append(ros_gz_bridge_process)
+    launch_actions.append(lidar_timestamp_node)
 
     return LaunchDescription(launch_actions)
 

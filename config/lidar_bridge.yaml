@@ -1,5 +1,5 @@
 - ros_topic_name: "/lidar_3d/points"
-  gz_topic_name: "/world/tugbot_depot/model/x500_lidar_3d_0/link/link/sensor/lidar_3d/scan/points"
+  gz_topic_name: "/lidar_3d/points"
   ros_type_name: "sensor_msgs/msg/PointCloud2"
   gz_type_name: "gz.msgs.PointCloudPacked"
   direction: GZ_TO_ROS
@@ -21,3 +21,4 @@
   ros_type_name: "rosgraph_msgs/msg/Clock"
   gz_type_name: "gz.msgs.Clock"
   direction: GZ_TO_ROS
+
