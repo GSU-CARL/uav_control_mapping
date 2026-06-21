@@ -31,23 +31,18 @@
         </geometry>
       </visual>
 
-      <!--
-        3D GPU LiDAR — Velodyne VLP-16 style
-        Horizontal : 360 deg, 1800 samples
-        Vertical   : -15 to +15 deg, 16 channels
-        Range      : 0.1 – 100 m @ 10 Hz
-      -->
-      <sensor name="lidar_3d" type="gpu_lidar">
-        <gz_frame_id>link</gz_frame_id>
-        <topic>lidar_3d</topic>   <!-- deterministic topic -->
-        <pose>0 0 0.055 0 0 0</pose>
-        <lidar>                    <!-- was <ray> in old SDF -->
+      <!-- LIDAR: native Gz gpu_lidar, publishes to /lidar_3d/points -->
+      <sensor name='lidar_3d' type='gpu_lidar'>
+        <topic>/lidar_3d/points</topic>
+        <visualize>0</visualize>
+        <update_rate>10</update_rate>
+        <lidar>
           <scan>
             <horizontal>
-              <samples>1800</samples>
+              <samples>440</samples>
               <resolution>1</resolution>
-              <min_angle>-3.14159265</min_angle>
-              <max_angle>3.14159265</max_angle>
+              <min_angle>-3.14159</min_angle>
+              <max_angle>3.14159</max_angle>
             </horizontal>
             <vertical>
               <samples>16</samples>
@@ -57,19 +52,38 @@
             </vertical>
           </scan>
           <range>
-            <min>0.1</min>
-            <max>100.0</max>
-            <resolution>0.01</resolution>
+            <min>0.9</min>
+            <max>130.0</max>
+            <resolution>0.001</resolution>
           </range>
           <noise>
             <type>gaussian</type>
-            <mean>0.0</mean>
-            <stddev>0.001</stddev>
+            <mean>0</mean>
+            <stddev>0.0003</stddev>
           </noise>
         </lidar>
+        <pose>0 0 -0.4377 3.14159 0 3.14159</pose>
+      </sensor>
+
+      <!-- IMU: native Gz imu, publishes to /imu_raw -->
+      <sensor name='imu_sensor' type='imu'>
         <always_on>1</always_on>
-        <update_rate>10</update_rate>
-        <visualize>false</visualize>
+        <update_rate>200</update_rate>
+        <topic>/imu_raw</topic>
+        <imu>
+          <angular_velocity>
+            <x><noise type='gaussian'><mean>0</mean><stddev>0</stddev></noise></x>
+            <y><noise type='gaussian'><mean>0</mean><stddev>0</stddev></noise></y>
+            <z><noise type='gaussian'><mean>0</mean><stddev>0</stddev></noise></z>
+          </angular_velocity>
+          <linear_acceleration>
+            <x><noise type='gaussian'><mean>0</mean><stddev>0</stddev></noise></x>
+            <y><noise type='gaussian'><mean>0</mean><stddev>0</stddev></noise></y>
+            <z><noise type='gaussian'><mean>0</mean><stddev>0</stddev></noise></z>
+          </linear_acceleration>
+          <enable_orientation>1</enable_orientation>
+        </imu>
+        <pose>0 0 -0.297322 3.14159 0 3.14159</pose>
       </sensor>
 
     </link>
