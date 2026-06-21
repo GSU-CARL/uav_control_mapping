@@ -34,7 +34,7 @@ def generate_launch_description():
                 os.path.join(get_package_share_directory('rtabmap_launch'), 'launch', 'rtabmap.launch.py')
             ),
             launch_arguments={
-                'rtabmap_viz': 'false',
+                'rtabmap_viz': 'true',
                 'viz': 'false',       
                 'rviz': 'false',
                 'rtabmap_args':     '--delete_db_on_start '
