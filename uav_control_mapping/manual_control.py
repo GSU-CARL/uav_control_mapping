@@ -10,8 +10,8 @@ from uav_control_mapping.drone_base import DroneBaseNode
 
 MAX_VEL = 2.0
 MAX_YAW_RATE = 0.5
-SPEED = 1.0
-YAW_SPEED = 0.5
+SPEED = 10.0
+YAW_SPEED = 1
 
 def quaternion_to_yaw(q) -> float:
     """Extract yaw (radians) from a geometry_msgs/Quaternion."""

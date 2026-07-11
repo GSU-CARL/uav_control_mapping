@@ -27,7 +27,7 @@
 
       <visual name="visual">
         <geometry>
-          <mesh><uri>model://lidar_3d/meshes/velodyne.dae</uri></mesh>
+          <mesh><uri>model://lidar_3d/meshes/lidar_3d.dae</uri></mesh>
         </geometry>
       </visual>
 
@@ -62,7 +62,7 @@
             <stddev>0.0003</stddev>
           </noise>
         </lidar>
-        <pose>0 0 -0.4377 3.14159 0 3.14159</pose>
+        <pose>0 0 0.0435 0 0 0</pose>
       </sensor>
 
       <!-- IMU: native Gz imu, publishes to /imu_raw -->
@@ -83,7 +83,7 @@
           </linear_acceleration>
           <enable_orientation>1</enable_orientation>
         </imu>
-        <pose>0 0 -0.297322 3.14159 0 3.14159</pose>
+        <pose>0 0 0.0435 0 0 0</pose>
       </sensor>
 
     </link>

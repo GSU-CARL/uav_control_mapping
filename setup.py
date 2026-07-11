@@ -51,6 +51,9 @@ setup(
             'trajectory_generator_node = uav_control_mapping.trajectory_generator:main',
             'trajectory_follower_node = uav_control_mapping.trajectory_follower:main',
             'lidar_time_injector = uav_control_mapping.lidar_time_injection:main',
+            'imu_corrector = uav_control_mapping.imu_corrector:main',
+            'imu_lidar_sync_checker = uav_control_mapping.imu_lidar_sync_checker:main',
+            'check_time_field = uav_control_mapping.check_time_field:main',
         ],
     },
 )
