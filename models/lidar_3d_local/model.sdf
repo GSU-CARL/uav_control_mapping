@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <sdf version="1.9">
-  <model name="lidar_3d">
+  <model name="lidar_3d_local">
     <link name="link">
       <pose>0 0 0 0 0 0</pose>
       <inertial>
@@ -27,13 +27,13 @@
 
       <visual name="visual">
         <geometry>
-          <mesh><uri>model://lidar_3d/meshes/lidar_3d.dae</uri></mesh>
+          <mesh><uri>model://lidar_3d_local/meshes/lidar_3d_local.dae</uri></mesh>
         </geometry>
       </visual>
 
-      <!-- LIDAR: native Gz gpu_lidar, publishes to /lidar_3d/points -->
-      <sensor name='lidar_3d' type='gpu_lidar'>
-        <topic>/lidar_3d/points</topic>
+      <!-- LIDAR: native Gz gpu_lidar, publishes to /lidar_3d_local/points -->
+      <sensor name='lidar_3d_local' type='gpu_lidar'>
+        <topic>/lidar_3d_local/points</topic>
         <visualize>0</visualize>
         <update_rate>10</update_rate>
         <lidar>

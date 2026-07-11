@@ -19,7 +19,7 @@ def get_data_files():
     ]
     
     # Recursively add model files and subdirectories
-    for root, dirs, files in os.walk('model'):
+    for root, dirs, files in os.walk('models'):
         if files:  # Only add if directory has files
             target_dir = os.path.join('share', package_name, root)
             file_paths = [os.path.join(root, f) for f in files]
@@ -47,13 +47,8 @@ setup(
         'console_scripts': [
             'manual_control_node = uav_control_mapping.manual_control:main',
             'simple_nav_node = uav_control_mapping.simple_nav:main',
-            'waypoint_manager_node = uav_control_mapping.waypoint_manager:main',
-            'trajectory_generator_node = uav_control_mapping.trajectory_generator:main',
-            'trajectory_follower_node = uav_control_mapping.trajectory_follower:main',
             'lidar_time_injector = uav_control_mapping.lidar_time_injection:main',
-            'imu_corrector = uav_control_mapping.imu_corrector:main',
             'imu_lidar_sync_checker = uav_control_mapping.imu_lidar_sync_checker:main',
-            'check_time_field = uav_control_mapping.check_time_field:main',
         ],
     },
 )
