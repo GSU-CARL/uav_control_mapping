@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# @name Gazebo x500 lidar 3d
+#
+# @type Quadrotor
+#
+
+PX4_SIM_MODEL=${PX4_SIM_MODEL:=x500_lidar_3d}
+
+. ${R}etc/init.d-posix/airframes/4001_gz_x500
+
+# x500 + 3D lidar adds 0.37 kg (2.0 -> 2.37 kg, +18.5%). Base x500 hover
+# thrust is ~0.5; scale by mass ratio so takeoff/hover doesn't sink or
+# overshoot before the hover-thrust estimator converges.
+param set-default MPC_THR_HOVER 0.60
+param set-default MPC_USE_HTE 1

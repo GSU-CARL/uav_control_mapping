@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="lidar_3d">
+    <link name="link">
+      <pose>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0.0435 0 0 0</pose>
+        <mass>0.37</mass>
+        <inertia>
+          <ixx>0.000344</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>0.000344</iyy><iyz>0</iyz><izz>0.000222</izz>
+        </inertia>
+      </inertial>
+
+      <collision name="collision_base">
+        <pose>0 0 0.0205 0 0 0</pose>
+        <geometry><box><size>0.06 0.06 0.041</size></box></geometry>
+      </collision>
+      <collision name="collision_mid">
+        <pose>0 0 0.055 0 0 0</pose>
+        <geometry><cylinder><radius>0.025</radius><length>0.028</length></cylinder></geometry>
+      </collision>
+      <collision name="collision_top">
+        <pose>0 0 0.078 0 0 0</pose>
+        <geometry><box><size>0.056 0.056 0.018</size></box></geometry>
+      </collision>
+
+      <visual name="visual">
+        <geometry>
+          <mesh><uri>model://lidar_3d/meshes/lidar_3d.dae</uri></mesh>
+        </geometry>
+      </visual>
+
+      <!-- LIDAR: native Gz gpu_lidar, publishes to /lidar_3d/points -->
+      <sensor name='lidar_3d' type='gpu_lidar'>
+        <topic>/lidar_3d/points</topic>
+        <visualize>0</visualize>
+        <update_rate>10</update_rate>
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>440</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.14159</min_angle>
+              <max_angle>3.14159</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>16</samples>
+              <resolution>1</resolution>
+              <min_angle>-0.261799</min_angle>
+              <max_angle>0.261799</max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min>0.9</min>
+            <max>130.0</max>
+            <resolution>0.001</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0</mean>
+            <stddev>0.0003</stddev>
+          </noise>
+        </lidar>
+        <pose>0 0 0.0435 0 0 0</pose>
+      </sensor>
+
+      <!-- IMU: native Gz imu, publishes to /imu_raw -->
+      <sensor name='imu_sensor' type='imu'>
+        <always_on>1</always_on>
+        <update_rate>200</update_rate>
+        <topic>/imu_raw</topic>
+        <imu>
+          <angular_velocity>
+            <x><noise type='gaussian'><mean>0</mean><stddev>0</stddev></noise></x>
+            <y><noise type='gaussian'><mean>0</mean><stddev>0</stddev></noise></y>
+            <z><noise type='gaussian'><mean>0</mean><stddev>0</stddev></noise></z>
+          </angular_velocity>
+          <linear_acceleration>
+            <x><noise type='gaussian'><mean>0</mean><stddev>0</stddev></noise></x>
+            <y><noise type='gaussian'><mean>0</mean><stddev>0</stddev></noise></y>
+            <z><noise type='gaussian'><mean>0</mean><stddev>0</stddev></noise></z>
+          </linear_acceleration>
+          <enable_orientation>1</enable_orientation>
+        </imu>
+        <pose>0 0 0.0435 0 0 0</pose>
+      </sensor>
+
+    </link>
+  </model>
+</sdf>

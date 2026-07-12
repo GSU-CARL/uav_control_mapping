@@ -1,0 +1,130 @@
+diff --git a/config/horizon.yaml b/config/horizon.yaml
+index b5320f6..4867cc1 100644
+--- a/config/horizon.yaml
++++ b/config/horizon.yaml
+@@ -23,7 +23,7 @@
+             imu_time_inte: 0.005 # = 1 / frequency of IMU
+             satu_acc: 3.0 # the saturation value of IMU's acceleration. not related to the units
+             satu_gyro: 35.0 # the saturation value of IMU's angular velocity. not related to the units
+-            acc_norm: 1.0 # 1.0 for g as unit, 9.81 for m/s^2 as unit of the IMU's acceleration
++            acc_norm: 9.81 # 1.0 for g as unit, 9.81 for m/s^2 as unit of the IMU's acceleration
+             lidar_meas_cov: 0.01 # 0.001
+             acc_cov_output: 500.0
+             gyr_cov_output: 1000.0
+diff --git a/config/velody16.yaml b/config/velody16.yaml
+index 50ed7f3..496551e 100644
+--- a/config/velody16.yaml
++++ b/config/velody16.yaml
+@@ -1,8 +1,9 @@
+ /**:
+     ros__parameters:
+         common:
+-            lid_topic: "/velodyne_points"
+-            imu_topic: "/imu/data"
++            use_sim_time: true
++            lid_topic: "/drone/lidar_3d/points_timestamped"
++            imu_topic: "/drone/imu2"
+             con_frame: false # true: if you need to combine several LiDAR frames into one
+             con_frame_num: 1 # the number of frames combined
+             cut_frame: false # true: if you need to cut one LiDAR frame into several subframes
+@@ -12,15 +13,15 @@
+ 
+         preprocess:
+             lidar_type: 2 # 1 for Livox serials LiDAR, 2 for Velodyne LiDAR, 3 for ouster LiDAR
+-            scan_line: 32
+-            timestamp_unit: 2           # the unit of time/t field in the PointCloud2 rostopic: 0-second, 1-milisecond, 2-microsecond, 3-nanosecond.
+-            blind: 2.0
++            scan_line: 16
++            timestamp_unit: 0           # the unit of time/t field in the PointCloud2 rostopic: 0-second, 1-milisecond, 2-microsecond, 3-nanosecond.
++            blind: 0.5
+ 
+         mapping:
+             imu_en: true
+             start_in_aggressive_motion: false # if true, a preknown gravity should be provided in following gravity_init
+             extrinsic_est_en: false # for aggressive motion, set this variable false
+-            imu_time_inte: 0.01 # = 1 / frequency of IMU
++            imu_time_inte: 0.004 # = 1 / frequency of IMU (/drone/imu2 = base_link imu_sensor runs at 250 Hz -> 0.004 s)
+             satu_acc: 30.0 # the saturation value of IMU's acceleration. not related to the units
+             satu_gyro: 35.0 # the saturation value of IMU's angular velocity. not related to the units
+             acc_norm: 9.81 # 1.0 for g as unit, 9.81 for m/s^2 as unit of the IMU's acceleration
+@@ -40,16 +41,12 @@
+             gravity_align: true # true to align the z axis of world frame with the direction of gravity, and the gravity direction should be specified below
+             gravity: [ 0.0, 0.0, -9.810 ] # [0.0, 9.810, 0.0] # gravity to be aligned
+             gravity_init: [ 0.0, 0.0, -9.810 ] # [0.0, 9.810, 0.0] # # preknown gravity in the first IMU body frame, use when imu_en is false or start from a non-stationary state
+-            extrinsic_T: [ 0.0, 0.0, 0.28 ] # ulhk # [-0.5, 1.4, 1.5] # utbm
+-            # extrinsic_R: [ 0, 1, 0,
+-            #                -1, 0, 0,
+-            #                0, 0, 1 ] # ulhk 5 6
+-            # extrinsic_R: [ 0, -1, 0,
+-            #                 1, 0, 0,
+-            #                 0, 0, 1 ] # utbm 1, 2
+-            extrinsic_R: [ 1.0, 0.0, 0.0,
+-                           0.0, 1.0, 0.0,
+-                           0.0, 0.0, 1.0 ] # ulhk 4 utbm 3
++            
++            extrinsic_T: [ 0.0,  0.0, 0.3035 ]  # /drone/imu2 = base_link imu_sensor; lidar_3d is offset via LidarJoint (0,0,0.26 in x500_lidar_3d/model.sdf) plus the lidar_3d sensor's own 0,0,0.0435 pose within its link -> lever-arm of lidar in IMU(base_link) frame. Keep in sync with the SDF and the static TF in point_lio_full.launch.py.
++            extrinsic_R: [ 1.0,  0.0,  0.0,
++                	    0.0,  1.0,  0.0,
++                            0.0,  0.0, 1.0 ] 
++
+ 
+         odometry:
+             publish_odometry_without_downsample: false
+@@ -60,6 +57,6 @@
+             scan_bodyframe_pub_en: false  # true: output the point cloud scans in IMU-body-frame
+ 
+         pcd_save:
+-            pcd_save_en: false
++            pcd_save_en: true
+             interval: -1                 # how many LiDAR frames saved in each pcd file;
+-            # -1 : all frames will be saved in ONE pcd file, may lead to memory crash when having too much frames.
+\ No newline at end of file
++            # -1 : all frames will be saved in ONE pcd file, may lead to memory crash when having too much frames.
+diff --git a/launch/mapping_velody16.launch.py b/launch/mapping_velody16.launch.py
+index 21cd90b..03209f6 100644
+--- a/launch/mapping_velody16.launch.py
++++ b/launch/mapping_velody16.launch.py
+@@ -19,6 +19,7 @@ def generate_launch_description():
+             'config', 'velody16.yaml'
+         ]),
+         {
++            'use_sim_time': True, # costume change.
+             'use_imu_as_input': False,  # Change to True to use IMU as input of Point-LIO
+             'prop_at_freq_of_imu': True,
+             'check_satu': True,
+@@ -28,7 +29,7 @@ def generate_launch_description():
+             'filter_size_surf': 0.5,  # Options: 0.5, 0.3, 0.2, 0.15, 0.1
+             'filter_size_map': 0.5,  # Options: 0.5, 0.3, 0.15, 0.1
+             'cube_side_length': 1000.0,  # Option: 1000 (changed from 2000)
+-            'runtime_pos_log_enable': False,  # Option: True
++            'runtime_pos_log_enable': True,  # Option: True
+         }
+     ]
+ 
+diff --git a/src/laserMapping.cpp b/src/laserMapping.cpp
+index b6d5f4a..f2ba982 100644
+--- a/src/laserMapping.cpp
++++ b/src/laserMapping.cpp
+@@ -817,11 +817,11 @@ int main(int argc, char **argv) {
+ //------------------------------------------------------------------------------------------------------
+     signal(SIGINT, SigHandle);
+     rclcpp::Rate rate(5000);
++    rclcpp::executors::SingleThreadedExecutor executor;
++    executor.add_node(nh);
+     while (rclcpp::ok()) {
+         if (flg_exit) break;
+         //ros::spinOnce();
+-        rclcpp::executors::SingleThreadedExecutor executor;
+-        executor.add_node(nh);
+         executor.spin_some(); // 处理当前可用的回调
+ 
+         if (sync_packages(Measures)) {
+@@ -857,6 +857,8 @@ int main(int argc, char **argv) {
+                         imu_deque.pop_front();
+                         // imu_deque.pop();
+                     }
++                    state_in.vel.setZero();
++                    state_out.vel.setZero();
+                     if (non_station_start) {
+                         state_in.gravity << VEC_FROM_ARRAY(gravity_init);
+                         state_out.gravity << VEC_FROM_ARRAY(gravity_init);

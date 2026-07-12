@@ -1,22 +1,14 @@
 - ros_topic_name: "/drone/lidar_3d/points"
-  gz_topic_name: "/lidar_3d/points/points"
+  gz_topic_name: "/lidar_3d_local/points/points"
   ros_type_name: "sensor_msgs/msg/PointCloud2"
   gz_type_name: "gz.msgs.PointCloudPacked"
   direction: GZ_TO_ROS
 
-- ros_topic_name: "/drone/imu"
-  gz_topic_name: "/imu_raw"
-  ros_type_name: "sensor_msgs/msg/Imu"
-  gz_type_name: "gz.msgs.IMU"
-  direction: GZ_TO_ROS
-
 - ros_topic_name: "/drone/imu2"
-  gz_topic_name: "/world/tugbot_warehouse/model/x500_lidar_3d_0/link/base_link/sensor/imu_sensor/imu"
+  gz_topic_name: "/world/tugbot_warehouse/model/x500_lidar_3d_local_0/link/base_link/sensor/imu_sensor/imu"
   ros_type_name: "sensor_msgs/msg/Imu"
   gz_type_name: "gz.msgs.IMU"
   direction: GZ_TO_ROS
-
-
 
 - ros_topic_name: "/tugbot/lidar_3d/points"
   gz_topic_name: "/world/tugbot_warehouse/model/tugbot/link/scan_omni/sensor/scan_omni/scan/points"
