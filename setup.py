@@ -16,6 +16,8 @@ def get_data_files():
         (os.path.join('share', package_name, 'world'), glob('world/*')),
         # Add config files
         (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
+        # Add rviz configs
+        (os.path.join('share', package_name, 'rviz'), glob('rviz/*.rviz')),
     ]
     
     # Recursively add model files and subdirectories
@@ -46,10 +48,12 @@ setup(
     entry_points={
         'console_scripts': [
             'manual_control_node = uav_control_mapping.manual_control:main',
+            'ground_manual_control_node = uav_control_mapping.ground_manual_control:main',
             'simple_nav_node = uav_control_mapping.simple_nav:main',
             'lidar_time_injector = uav_control_mapping.lidar_time_injection:main',
             'imu_lidar_sync_checker = uav_control_mapping.imu_lidar_sync_checker:main',
             'ground_lidar_time_injector = uav_control_mapping.ground_lidar_time_injection:main',
+            'gorund_manual_control_node = uav_control_mapping.ground_manual_control:main',
         ],
     },
 )

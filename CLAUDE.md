@@ -7,6 +7,19 @@ This is the `uav_control_mapping` package (its own git repo) inside the
 external toolchain, PX4 paths) lives in `../CLAUDE.md` — read that too. Rules
 that carry over: **never push to git**, never edit `build/`/`install/`/`log/`.
 
+## DO NOT DO!!
+
+**Always ask before making any change outside this directory**
+(`uav_control_mapping/`) — e.g. `~/PX4-Autopilot`, `../point_lio_ros2`,
+`../lidarslam_ros2`, or any other sibling package/repo in `~/ros2_ws/src`.
+Confirm with the user first, even for small edits.
+
+If such an external change is made (with the user's go-ahead), document it in
+`EXTERNAL_CHANGES.md` in this directory (create it if it doesn't exist yet) —
+what file changed, where, and why — in addition to updating the
+`external_files/` snapshot described below. Then update this CLAUDE.md's
+`external_files/` section if the change affects what's tracked there.
+
 ## Build & test
 
 Always from the workspace root, then source the overlay:
