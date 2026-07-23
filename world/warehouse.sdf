@@ -64,7 +64,7 @@
       </plugin>
 
       <!-- World statistics -->
-      <plugin filename="WorldStats" name="World stats">
+      <!-- <plugin filename="WorldStats" name="World stats">
         <ignition-gui>
           <title>World stats</title>
           <property type="bool" key="showTitleBar">false</property>
@@ -84,9 +84,9 @@
         <real_time>true</real_time>
         <real_time_factor>true</real_time_factor>
         <iterations>true</iterations>
-      </plugin>
+      </plugin> -->
 
-      <plugin filename="TransformControl" name="Transform control">
+      <!-- <plugin filename="TransformControl" name="Transform control">
           <ignition-gui>
               <property type="bool" key="showTitleBar">false</property>
               <property key="x" type="double">0</property>
@@ -96,7 +96,8 @@
               <property key="state" type="string">floating</property>
               <property key="cardBackground" type="string">#666666</property>
           </ignition-gui>
-      </plugin>
+      </plugin> -->
+
       <plugin filename="Shapes" name="Shapes">
           <ignition-gui>
               <property type="bool" key="showTitleBar">false</property>
@@ -108,7 +109,8 @@
               <property key="cardBackground" type="string">#666666</property>
           </ignition-gui>
       </plugin>
-      <plugin filename="Screenshot" name="Screenshot">
+
+      <!-- <plugin filename="Screenshot" name="Screenshot">
           <ignition-gui>
               <property type="bool" key="showTitleBar">false</property>
               <property key="x" type="double">400</property>
@@ -118,7 +120,8 @@
               <property key="state" type="string">floating</property>
               <property key="cardBackground" type="string">#666666</property>
           </ignition-gui>
-      </plugin>
+      </plugin> -->
+
       <plugin filename="ComponentInspector" name="Component inspector">
           <ignition-gui>
               <property key="x" type="double">0</property>
@@ -191,7 +194,7 @@
     </include>
 
     <!-- Tugbot -->
-    <!--
+    
     <include>
       <uri>
         https://fuel.ignitionrobotics.org/1.0/MovAi/models/Tugbot-charging-station
@@ -207,7 +210,7 @@
       <name>tugbot</name>
       <pose>13.9 -10.6 0.1 0 0 0</pose>
     </include>
-    -->
+   
 
     <!-- Carts -->
 

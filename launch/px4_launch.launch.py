@@ -24,13 +24,15 @@ from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
 PX4_AUTOPILOT_DIR = '/home/fishman/PX4-Autopilot'
-WORLD_NAME = 'tugbot_warehouse'          # internal <world name> in warehouse.sdf
-WORLD_FILE = 'warehouse.sdf'             # the file we actually load
+WORLD_NAME = 'tugbot_warehouse'          
+WORLD_FILE = 'warehouse.sdf'             
 MODEL_NAME = 'x500_lidar_3d_local'
 MODEL_INSTANCE = f'{MODEL_NAME}_0'       # 'x500_lidar_3d_local_0'
 
 
 def generate_launch_description():
+
+
     package_dir = get_package_share_directory('uav_control_mapping')
     models_dir = os.path.join(package_dir, 'models')
     model_sdf_path = os.path.join(models_dir, MODEL_NAME, 'model.sdf')
@@ -56,12 +58,34 @@ def generate_launch_description():
     gz_server_config = os.path.join(
         PX4_AUTOPILOT_DIR, 'src', 'modules', 'simulation', 'gz_bridge', 'server.config')
 
-    gz_sim_process = ExecuteProcess(
-        cmd=['gz', 'sim', '-r', world_path],
+    # Server ONLY (-s). The GUI (gz sim -g) is started separately, AFTER the
+    # model is spawned (see gz_gui_process below). This ordering matters: a
+    # model spawned via the create service *after* the GUI has already
+    # connected lands in the server's scene graph (physics, sensors, Point-LIO
+    # all work) but does not reliably propagate into the GUI's scene manager,
+    # so the drone was invisible and absent from the Entity Tree. Models that
+    # already exist when the GUI first connects always appear, so we spawn
+    # first and start the GUI last.
+
+    gz_server_process = ExecuteProcess(
+        cmd=['gz', 'sim', '-s', '-r', world_path],
         additional_env={
             'GZ_SIM_RESOURCE_PATH': gz_resource_path,
             'GZ_SIM_SYSTEM_PLUGIN_PATH': gz_plugin_path,
             'GZ_SIM_SERVER_CONFIG_PATH': gz_server_config,
+        },
+        output='screen',
+    )
+
+    # GUI client. Needs GZ_SIM_RESOURCE_PATH too so it can resolve the
+    # model://x500_base and model://lidar_3d_local mesh URIs the SceneBroadcaster
+    # sends it; without it the drone meshes would fail to load (invisible even
+    # though the entity is in the tree). Started after the spawn completes.
+    
+    gz_gui_process = ExecuteProcess(
+        cmd=['gz', 'sim', '-g'],
+        additional_env={
+            'GZ_SIM_RESOURCE_PATH': gz_resource_path,
         },
         output='screen',
     )
@@ -108,18 +132,21 @@ def generate_launch_description():
         output='screen',
     )
 
-    # Sequencing is deliberate: PX4/bridge/injector only start after the spawn
-    # command exits. Starting the bridge before the model exists leaves every
-    # sensor topic unbridged.
-    start_px4_after_spawn = RegisterEventHandler(
+    # Sequencing is deliberate: the GUI, PX4, bridge and injector only start
+    # after the spawn command exits. Starting the GUI before the model exists
+    # is exactly what made the drone invisible (see gz_server_process comment);
+    # starting the bridge before the model exists leaves every sensor topic
+    # unbridged.
+    start_after_spawn = RegisterEventHandler(
         OnProcessExit(
             target_action=spawn_model_process,
-            on_exit=[px4_process, ros_gz_bridge_process, lidar_timestamp_node],
+            on_exit=[gz_gui_process, px4_process,
+                     ros_gz_bridge_process, lidar_timestamp_node],
         )
     )
 
     return LaunchDescription([
-        gz_sim_process,
+        gz_server_process,
         spawn_model_process,
-        start_px4_after_spawn,
+        start_after_spawn,
     ])

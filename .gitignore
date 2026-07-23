@@ -1,4 +1,7 @@
 /planning_ai/
+/graphify-out/
 # catch
 /__pycache__/
 uav_control_mapping/__pycache__
+/.vscode/
+/.claude/
