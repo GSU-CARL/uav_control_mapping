@@ -72,7 +72,7 @@ through MAVROS.
 
 All control nodes derive from `DroneBaseNode` (`uav_control_mapping/drone_base.py`),
 which wraps the MAVROS state/arm/OFFBOARD handshake. Entry points (setup.py):
-`manual_control_node`, `simple_nav_node`, `lidar_time_injector`,
+`manual_control_node`, `lidar_time_injector`,
 `imu_lidar_sync_checker` (diagnostic; prints sync/jitter/per-point-time stats).
 
 `lidar_time_injector` (`lidar_time_injection.py`) rewrites the gz point cloud

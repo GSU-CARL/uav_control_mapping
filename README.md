@@ -19,7 +19,7 @@ without flying.
 PX4 SITL (x500 + 3D lidar) ── gz sim ── ros_gz_bridge ─┬─> lidar_time_injector ─> Point-LIO ─> /cloud_registered ─> octomap_server
                                                         └─> /drone/imu2 ─────────────┘                                  │
                                                                                                                          v
-                                              MAVROS ── manual_control_node / simple_nav_node        occupied-cells grid / RViz
+                                              MAVROS ── manual_control_node                          occupied-cells grid / RViz
 ```
 
 This README covers the current state of the package. Day-to-day working
@@ -148,8 +148,6 @@ colcon test --packages-select uav_control_mapping && colcon test-result --verbos
    ```bash
    ros2 run uav_control_mapping manual_control_node
    ```
-   or send `PoseStamped` goals to `/goal_pose` for `simple_nav_node` to fly
-   to (fixed altitude 3.0 m).
 6. Ground robot teleop (no MAVROS/offboard handshake — tugbot is driven
    directly by gz's DiffDrive plugin):
    ```bash
@@ -170,7 +168,6 @@ state/arm/OFFBOARD handshake (`/mavros/state`,
 | Entry point | Source | What it does |
 |---|---|---|
 | `manual_control_node` | `manual_control.py` | Keyboard teleop for the drone via MAVROS offboard setpoints. |
-| `simple_nav_node` | `simple_nav.py` | Flies to `PoseStamped` goals published on `/goal_pose` (fixed z = 3.0 m). |
 | `ground_manual_control_node` | `ground_manual_control.py` | Keyboard teleop for the tugbot ground robot, publishes `Twist` directly (no MAVROS). |
 | `lidar_time_injector` | `lidar_time_injection.py` | Rewrites the gz point cloud into the FAST-LIO/Point-LIO layout (x,y,z,intensity,ring,time) the drone's lidar needs. |
 | `ground_lidar_time_injector` | `ground_lidar_time_injection.py` | Same idea, for the tugbot's lidar. |
