@@ -140,6 +140,9 @@ colcon test --packages-select uav_control_mapping && colcon test-result --verbos
    ```
 3. Start MAVROS separately (not launched by this package), pointed at PX4
    SITL's MAVLink port.
+   ```
+   ros2 launch mavros px4.launch fcu_url:=udp://:14540@localhost:14557
+   ```
 4. Optional — 3D occupancy grid, once Point-LIO is running:
    ```bash
    ros2 launch uav_control_mapping octomap.launch.py
