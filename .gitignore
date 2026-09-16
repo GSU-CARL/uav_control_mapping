@@ -1,1 +1,6 @@
 /planning_ai/
+/test/__pycache__/
+/uav_control_mapping/__pycache__/
+/.vscode/
+/docs/
+/graphify-out/

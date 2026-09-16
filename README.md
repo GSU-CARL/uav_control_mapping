@@ -1,3 +1,4 @@
+the main branch will run visual slam with rtap. Go to map_w_point_lio for the latest work. 
 # UAV Control and Mapping
 
 Student: Saroeun Norakvitou (Intern) Direct Mentor: Yong Ann Voeurn (PhD Candidate) Supervisor: Prof. Doyun Lee — Georgia Southern University ROS Distribution: ROS 2 Humble | Simulator: Ignition Gazebo 8.11 (Harmonic)
