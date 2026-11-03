@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 Combined launch: PX4 SITL + ROS-GZ bridge + lidar_time_injector
-(both via local_px4_file.launch.py) + static TF (base_link -> lidar_3d,
+(via px4_launch.launch.py) + static TF (base_link -> lidar_3d,
 matching the real SDF offset) + Point-LIO (mapping_velody16.launch.py).
 
-The lidar_time_injector is started inside local_px4_file.launch.py — do NOT
+The lidar_time_injector is started inside px4_launch.launch.py — do NOT
 add a second instance here, its defaults (in: /drone/lidar_3d/points, out:
 /drone/lidar_3d/points_timestamped, rpm=600, h=440, v=16) already match
 lidar_bridge2.yaml and velody16.yaml. Running two instances double-publishes
@@ -28,10 +28,10 @@ def generate_launch_description():
     uav_control_mapping_dir = get_package_share_directory('uav_control_mapping')
     point_lio_dir = get_package_share_directory('point_lio')
 
-    # 1. PX4 SITL + ROS-GZ bridge (reuse local_px4_file.launch.py as-is)
+    # 1. PX4 SITL + ROS-GZ bridge (reuse px4_launch.launch.py as-is)
     px4_and_bridge = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(uav_control_mapping_dir, 'launch', 'local_px4_file.launch.py')
+            os.path.join(uav_control_mapping_dir, 'launch', 'px4_launch.launch.py')
         )
     )
 
@@ -46,7 +46,7 @@ def generate_launch_description():
         arguments=['0', '0', '0.3035',
                    '0', '0', '0',
                    'base_link',
-                   'x500_lidar_3d_0/link/lidar_3d'],
+                   'x500_lidar_3d_local_0/link/lidar_3d'],
     )
 
     # aft_mapped (Point-LIO's body frame) visualized coincident with base_link
