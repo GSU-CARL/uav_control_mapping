@@ -20,35 +20,56 @@ PX4 SITL (x500 + 3D LiDAR) ──> ros_gz_bridge ──> lidar_time_injector ─
 
 ---
 
-## 1. Prerequisites & Dependencies
+## 1. Setup (Choose Docker or Native)
 
-- **Ubuntu 24.04** with **ROS 2 Jazzy**
-- **PX4-Autopilot** (`~/PX4-Autopilot`)
-- **Gazebo Harmonic** (`gz sim` 8.11) & `ros-jazzy-ros-gz-bridge`
-- **MAVROS** (`ros-jazzy-mavros`, `ros-jazzy-mavros-extras`)
-- **OctoMap** (`ros-jazzy-octomap-server`, `ros-jazzy-octomap-rviz-plugins`)
-- **Point-LIO** (`~/ros2_ws/src/point_lio_ros2`)
-- **Python packages:** `numpy`, `scipy`, `pynput`
+### Option A: Docker Setup (Recommended for Reproducibility)
 
-> **One-time PX4 & Point-LIO setup:** If setting up on a fresh machine, see [`external_files/README.md`](external_files/README.md) to copy the custom `x500_lidar_3d` airframe/model files into `~/PX4-Autopilot`.
+The repository includes a [`Dockerfile`](Dockerfile) and [`docker-compose.yml`](docker-compose.yml) that automatically install ROS 2 Jazzy, Gazebo Harmonic, MAVROS, OctoMap, PX4 SITL (`e17d81af21`), and Point-LIO (`dfloreaa/point_lio_ros2`), apply all patches from [`external_files/`](external_files/README.md), and build the workspace.
+
+1. **Build and start the container:**
+   ```bash
+   cd ~/ros2_ws/src/uav_control_mapping
+   xhost +local:docker
+   docker compose up -d --build
+   ```
+   *(If using an NVIDIA GPU with `nvidia-container-toolkit`, uncomment the `deploy:` block in [`docker-compose.yml`](docker-compose.yml) before starting.)*
+
+2. **Open shells inside the container:**
+   For each terminal in [Section 2 (Quick Start)](#2-quick-start-step-by-step), attach to the running container first:
+   ```bash
+   docker exec -it uav_control_mapping bash
+   ```
+   *(ROS 2 Jazzy and `/home/fishman/ros2_ws/install/setup.bash` are automatically sourced inside the container.)*
+
+3. **Stop the container when finished:**
+   ```bash
+   docker compose down
+   ```
 
 ---
 
-## 2. Build the Workspace
+### Option B: Native Ubuntu 24.04 Setup
 
-Run from your workspace root:
-
-```bash
-cd ~/ros2_ws
-colcon build --symlink-install --packages-select uav_control_mapping
-source install/setup.bash
-```
+- **Dependencies:**
+  - **ROS 2 Jazzy**, **Gazebo Harmonic** (`gz sim` 8.11), `ros-jazzy-ros-gz-bridge`
+  - **PX4-Autopilot** (`~/PX4-Autopilot`)
+  - **Point-LIO** (`~/ros2_ws/src/point_lio_ros2` from `https://github.com/dfloreaa/point_lio_ros2.git`)
+  - **MAVROS** (`ros-jazzy-mavros`, `ros-jazzy-mavros-extras`)
+  - **OctoMap** (`ros-jazzy-octomap-server`, `ros-jazzy-octomap-rviz-plugins`)
+  - **Python packages:** `numpy`, `scipy`, `pynput`
+- **One-time PX4 & Point-LIO patch setup:** Follow [`external_files/README.md`](external_files/README.md) to copy the custom `x500_lidar_3d` airframe/model files into `~/PX4-Autopilot` and apply the Point-LIO config patches.
+- **Build the workspace:**
+  ```bash
+  cd ~/ros2_ws
+  colcon build --symlink-install --packages-select point_lio uav_control_mapping --cmake-args -DCMAKE_BUILD_TYPE=Release
+  source install/setup.bash
+  ```
 
 ---
 
-## 3. Quick Start (Step-by-Step)
+## 2. Quick Start (Step-by-Step)
 
-Open a new terminal for each step below and run `source ~/ros2_ws/install/setup.bash` in each.
+Open 4 terminals (either native terminals with `source ~/ros2_ws/install/setup.bash`, or container shells via `docker exec -it uav_control_mapping bash`).
 
 ### Terminal 1 — Launch Gazebo + PX4 + Point-LIO Mapping
 Starts Gazebo, spawns the drone, bridges LiDAR/IMU, and launches Point-LIO + RViz:
@@ -89,7 +110,7 @@ ros2 launch uav_control_mapping octomap.launch.py
 
 ---
 
-## 4. Sending 3D Goals in RViz (`mighty_nav_node` / `astar_nav_node`)
+## 3. Sending 3D Goals in RViz (`mighty_nav_node` / `astar_nav_node`)
 
 1. Wait until the node logs `Drone airborne! Ready for 3D RViz /clicked_point goals.`
 2. In the **RViz** toolbar at the top, click **Publish Point**.
@@ -100,7 +121,7 @@ ros2 launch uav_control_mapping octomap.launch.py
 
 ---
 
-## 5. Keyboard Controls (`manual_control_node`)
+## 4. Keyboard Controls (`manual_control_node`)
 
 | Key | Action |
 | :--- | :--- |
@@ -113,7 +134,7 @@ ros2 launch uav_control_mapping octomap.launch.py
 
 ---
 
-## 6. Package Reference
+## 5. Package Reference
 
 ### Launch Files (`launch/`)
 
