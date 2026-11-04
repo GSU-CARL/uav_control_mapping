@@ -57,15 +57,17 @@ def generate_launch_description():
                 # that never reaches the node's actual max_range_ field.
                 'sensor_model.max_range': -1.0,
 
-                # Height limits (wide so nothing is clipped). Real param
-                # names have an underscore between "point" and "cloud"
+                # Height limits: crop out the warehouse roof/trusses (> 3.5m)
+                # so the top-down view in RViz stays unobstructed while keeping
+                # all shelves, racks, and walls in the flight altitude band.
+                # Real param names have an underscore between "point" and "cloud"
                 # ("point_cloud_min_z/max_z") -- "pointcloud_..." is silently
                 # ignored and the (already wide, -100/100) built-in default
                 # applies instead.
-                'point_cloud_min_z': -50.0,
-                'point_cloud_max_z': 50.0,
-                'occupancy_min_z': -50.0,
-                'occupancy_max_z': 50.0,
+                'point_cloud_min_z': -1.0,
+                'point_cloud_max_z': 3.5,
+                'occupancy_min_z': -1.0,
+                'occupancy_max_z': 3.5,
 
                 # No saved map to load; octomap_server logs one benign
                 # "Could not open file" warning at startup either way since
