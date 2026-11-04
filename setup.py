@@ -49,10 +49,9 @@ setup(
         'console_scripts': [
             'manual_control_node = uav_control_mapping.manual_control:main',
             'astar_nav_node = uav_control_mapping.astar_nav:main',
-            'ground_manual_control_node = uav_control_mapping.ground_manual_control:main',
+            'mighty_nav_node = uav_control_mapping.mighty_nav:main',
             'lidar_time_injector = uav_control_mapping.lidar_time_injection:main',
             'imu_lidar_sync_checker = uav_control_mapping.imu_lidar_sync_checker:main',
-            'ground_lidar_time_injector = uav_control_mapping.ground_lidar_time_injection:main',
         ],
     },
 )
