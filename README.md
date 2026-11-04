@@ -20,6 +20,18 @@ PX4 SITL (x500 + 3D LiDAR) ──> ros_gz_bridge ──> lidar_time_injector ─
 
 ---
 
+## Demos
+
+### MIGHTY Trajectory Planner (`mighty_nav_node`)
+![MIGHTY Planner Demo](img/mighty_demo.gif)  
+*Figure 1: Autonomous 3D warehouse navigation using the MIGHTY planner (Heat-Guided Global Planner + Quintic Hermite Spline L-BFGS trajectory optimization).*
+
+### 3D A* Path Planner (`astar_nav_node`)
+![3D A* Planner Demo](img/a_star_demo.gif)  
+*Figure 2: Autonomous 3D warehouse navigation using the 3D A* path planner with obstacle inflation and line-of-sight smoothing.*
+
+---
+
 ## 1. Setup (Choose Docker or Native)
 
 ### Option A: Docker Setup (Recommended for Reproducibility)
